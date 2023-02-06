@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:esmp_supplier/src/bloc/bloc/register_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register/register_bloc.dart';
 import 'package:esmp_supplier/src/utils/app_style.dart';
 import 'package:esmp_supplier/src/utils/my_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,8 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../bloc/bloc/register_event.dart';
-import '../../bloc/bloc/register_state.dart';
+import '../../bloc/register/register_event.dart';
+import '../../bloc/register/register_state.dart';
 import '../../router/app_router_constants.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -108,13 +108,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           ? null
                           : () async {
                               context.read<RegisterBloc>().add(RegisterPressed(
-                                  phone: _phoneController.text,
+                                  phone: _phoneController.text.trim(),
                                   onSuccess: (String verificationId) {
                                     GoRouter.of(context).pushNamed(
                                         AppRouterConstants.verifyRouteName,
                                         queryParams: {
                                           'verificationId': verificationId,
-                                          'isLogin': false,
+                                          'isLogin': false.toString(),
+                                          'phone': _phoneController.text.trim(),
                                         });
                                   }));
                             },

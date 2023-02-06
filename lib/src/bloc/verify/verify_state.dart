@@ -11,7 +11,6 @@ class VerifyInitial extends VerifyState {
   final int time;
   const VerifyInitial(this.time);
   @override
-  // TODO: implement props
   List<Object> get props => [time];
 }
 
@@ -19,10 +18,16 @@ class Verifying extends VerifyState {}
 
 class VerifySuccess extends VerifyState {}
 
+class VerifyOtpFailed extends VerifyState {
+  final String msg;
+  const VerifyOtpFailed(this.msg);
+  @override
+  List<Object> get props => [msg];
+}
+
 class VerifyFailed extends VerifyState {
   final String msg;
   const VerifyFailed(this.msg);
   @override
-  // TODO: implement props
   List<Object> get props => [msg];
 }

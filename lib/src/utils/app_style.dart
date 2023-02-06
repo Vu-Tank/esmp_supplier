@@ -22,4 +22,9 @@ class AppStyle {
     color: Colors.white,
     fontSize: 18,
   );
+  static ButtonStyle myButtonStyle = ElevatedButton.styleFrom(
+    backgroundColor: appColor,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20))),
+  );
 }

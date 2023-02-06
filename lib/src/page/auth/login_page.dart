@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:esmp_supplier/src/bloc/login/login_event.dart';
 import 'package:esmp_supplier/src/router/app_router_constants.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +107,8 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            log('ádd:${_phoneController.text}');
                             context.read<LoginBloc>().add(LoginPressed(
                                 phoneNumber: _phoneController.text,
                                 onSuccess: (String verificationId) {

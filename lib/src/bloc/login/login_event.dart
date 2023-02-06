@@ -12,6 +12,5 @@ class LoginPressed extends LoginEvent {
   const LoginPressed({required this.phoneNumber, required this.onSuccess});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [phoneNumber, onSuccess];
 }
