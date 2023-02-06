@@ -1,6 +1,9 @@
-import 'package:esmp_supplier/src/bloc/bloc/register_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register/register_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register_supplier/register_supplier_bloc.dart';
+import 'package:esmp_supplier/src/bloc/verify/time/cubit/timer_cubit.dart';
 import 'package:esmp_supplier/src/bloc/verify/verify_bloc.dart';
 import 'package:esmp_supplier/src/page/auth/register_page.dart';
+import 'package:esmp_supplier/src/page/auth/register_supplier_page.dart';
 import 'package:esmp_supplier/src/page/auth/verify_page.dart';
 import 'package:esmp_supplier/src/page/error_page.dart';
 import 'package:flutter/material.dart';
@@ -47,22 +50,56 @@ class AppRouter {
               },
             ),
             GoRoute(
+              path: AppRouterConstants.registerSupplierRouteName,
+              name: AppRouterConstants.registerSupplierRouteName,
+              pageBuilder: (context, state) {
+                String? firebaseToken = state.queryParams['firebaseToken'];
+                if (firebaseToken == null) {
+                  return const MaterialPage(
+                      child: ErrorPage(errorMessage: '404'));
+                } else {
+                  return MaterialPage(
+                    child: BlocProvider(
+                      create: (context) => RegisterSupplierBloc(),
+                      child: RegisterSupplierPage(firebaseToken: firebaseToken),
+                    ),
+                  );
+                }
+              },
+            ),
+            GoRoute(
               path: AppRouterConstants.verifyRouteName,
               name: AppRouterConstants.verifyRouteName,
               pageBuilder: (context, state) {
                 String? verificationId = state.queryParams['verificationId'];
                 String? isLogin = state.queryParams['isLogin'];
-                if (verificationId == null || isLogin == null) {
+                String? phone = state.queryParams['phone'];
+                if (verificationId == null ||
+                    isLogin == null ||
+                    phone == null) {
                   return const MaterialPage(
                       child: ErrorPage(errorMessage: '404'));
                 } else {
                   try {
                     return MaterialPage(
-                      child: BlocProvider(
-                        create: (context) => VerifyBloc(),
+                      child: MultiBlocProvider(
+                        providers: [
+                          // BlocProvider.value(
+                          //   value: BlocProvider.of<RegisterBloc>(context),
+                          // ),
+                          BlocProvider(
+                            create: (context) => VerifyBloc(),
+                          ),
+                          BlocProvider(
+                            create: (context) {
+                              return TimerCubit()..startTimer(60);
+                            },
+                          )
+                        ],
                         child: VerifyPage(
-                            isLogin: isLogin as bool,
-                            verificationId: verificationId),
+                            isLogin: isLogin == 'true',
+                            verificationId: verificationId,
+                            phone: phone),
                       ),
                     );
                   } catch (e) {
