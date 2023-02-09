@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:esmp_supplier/src/repositories/user_repositories.dart';
 import 'package:esmp_supplier/src/utils/local_Storage.dart';
-import 'package:esmp_supplier/src/utils/user_shared_pre.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/api_response.dart';
@@ -20,12 +19,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }));
     on<UserLoggedOut>(((event, emit) async {
       // UserSharedPre.removeUser();
-      LocalStorage.clearAll;
+      LocalStorage.clearAll();
       emit(AuthNotAuthenticated());
     }));
     on<AppLoaded>((event, emit) async {
       try {
-        // a simulated delay
         emit(AuthLoading());
         String? userID = LocalStorage.getValue('userID');
         String? token = LocalStorage.getValue('token');
@@ -33,8 +31,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           final ApiResponse apiResponse = await UserRepositories.refeshToken(
               token: token, userID: int.parse(userID));
           if (apiResponse.isSuccess!) {
-            emit(AuthAuthenticated(user: apiResponse.data));
+            User user = apiResponse.data;
+            LocalStorage.saveValue('token', user.token);
+            emit(AuthAuthenticated(user: user));
           } else {
+            LocalStorage.clearAll();
             emit(AuthNotAuthenticated());
           }
         } else {

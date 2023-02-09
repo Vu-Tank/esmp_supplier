@@ -42,8 +42,15 @@ class AppRouter {
               name: AppRouterConstants.loginRouteName,
               pageBuilder: (context, state) {
                 return MaterialPage(
-                  child: BlocProvider<LoginBloc>(
-                    create: (context) => LoginBloc(),
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => LoginBloc(),
+                      ),
+                      BlocProvider(
+                        create: (context) => _auth,
+                      )
+                    ],
                     child: const LoginPage(),
                   ),
                 );

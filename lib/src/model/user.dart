@@ -88,4 +88,9 @@ class User {
 
   factory User.fromJson(String source) =>
       User.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'User(userID: $userID, userName: $userName, email: $email, phone: $phone, dateOfBirth: $dateOfBirth, gender: $gender, crete_date: $crete_date, role: $role, image: $image, storeID: $storeID, addresses: $addresses, firebaseID: $firebaseID, fcM_Firebase: $fcM_Firebase, token: $token, isActive: $isActive)';
+  }
 }
