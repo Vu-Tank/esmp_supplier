@@ -9,6 +9,7 @@ import 'package:esmp_supplier/src/model/api_response.dart';
 import 'package:esmp_supplier/src/model/user.dart';
 import 'package:esmp_supplier/src/model/validation_item.dart';
 import 'package:esmp_supplier/src/repositories/address_repositories.dart';
+import 'package:esmp_supplier/src/repositories/cloud_firestore_service.dart';
 import 'package:esmp_supplier/src/repositories/goong_repositories.dart';
 import 'package:esmp_supplier/src/repositories/user_repositories.dart';
 import 'package:esmp_supplier/src/utils/app_constants.dart';
@@ -94,7 +95,11 @@ class RegisterSupplierBloc
               fcMFirebase: fcm);
           if (apiResponse.isSuccess!) {
             User user = apiResponse.data as User;
-            event.onSuccess(user);
+            await CloudFirestoreService(uid: event.uid)
+                .createUserCloud(
+                    userName: fullName.value,
+                    imageUrl: AppConstants.defaultAvatar)
+                .then((value) => event.onSuccess(user));
           } else {
             emit(RegisterSupplierFailed.fromOldState(state,
                 msg: apiResponse.msg));
