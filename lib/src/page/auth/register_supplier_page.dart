@@ -12,6 +12,7 @@ import 'package:esmp_supplier/src/utils/my_dialog.dart';
 import 'package:esmp_supplier/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterSupplierPage extends StatefulWidget {
   const RegisterSupplierPage(
@@ -521,6 +522,8 @@ class _RegisterSupplierPageState extends State<RegisterSupplierPage> {
                                       context
                                           .read<AuthBloc>()
                                           .add(UserLoggedIn(user: user));
+                                      GoRouter.of(context).pushReplacementNamed(
+                                          AppConstants.defaultAvatar);
                                     },
                                   )),
                           style: ElevatedButton.styleFrom(

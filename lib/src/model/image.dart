@@ -39,4 +39,9 @@ class Image {
 
   factory Image.fromJson(String source) =>
       Image.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Image(imageID: $imageID, fileName: $fileName, path: $path, crete_date: $crete_date, isActive: $isActive)';
+  }
 }

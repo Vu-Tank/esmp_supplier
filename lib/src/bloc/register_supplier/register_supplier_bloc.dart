@@ -12,6 +12,7 @@ import 'package:esmp_supplier/src/repositories/address_repositories.dart';
 import 'package:esmp_supplier/src/repositories/goong_repositories.dart';
 import 'package:esmp_supplier/src/repositories/user_repositories.dart';
 import 'package:esmp_supplier/src/utils/app_constants.dart';
+import 'package:esmp_supplier/src/utils/local_Storage.dart';
 import 'package:esmp_supplier/src/utils/utils.dart';
 import 'package:esmp_supplier/src/utils/validations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -93,6 +94,7 @@ class RegisterSupplierBloc
               fcMFirebase: fcm);
           if (apiResponse.isSuccess!) {
             User user = apiResponse.data as User;
+            event.onSuccess(user);
           } else {
             emit(RegisterSupplierFailed.fromOldState(state,
                 msg: apiResponse.msg));

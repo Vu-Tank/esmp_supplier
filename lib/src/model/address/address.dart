@@ -59,4 +59,9 @@ class Adderss {
 
   factory Adderss.fromJson(String source) =>
       Adderss.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Adderss(addressID: $addressID, userName: $userName, phone: $phone, context: $context, province: $province, district: $district, ward: $ward, latitude: $latitude, longitude: $longitude, isActive: $isActive)';
+  }
 }

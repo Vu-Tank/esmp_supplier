@@ -31,4 +31,8 @@ class Role {
 
   factory Role.fromJson(String source) =>
       Role.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() =>
+      'Role(roleID: $roleID, roleName: $roleName, isActive: $isActive)';
 }
