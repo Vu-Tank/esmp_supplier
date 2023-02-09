@@ -20,10 +20,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthNotAuthenticated());
     }));
     on<AppLoaded>((event, emit) async {
-      emit(AuthLoading());
       try {
-        await Future.delayed(
-            const Duration(milliseconds: 500)); // a simulated delay
+        // a simulated delay
+        emit(AuthLoading());
         int? userID = await UserSharedPre.getUserId();
         String? token = await UserSharedPre.getUsertoken();
         if (userID != null && token != null) {

@@ -73,6 +73,10 @@ class _HomePageState extends State<HomePage> {
                       : Container()),
             ),
           );
+        } else if (state is AuthLoading) {
+          return const Scaffold(
+            body: CircularProgressIndicator(),
+          );
         } else {
           return Scaffold(
             body: Center(
