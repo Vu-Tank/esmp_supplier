@@ -783,7 +783,7 @@ const RESOURCES = {
 "assets/assets/hanh_chinh_vn/xa_phuong/973.json": "f7551836c99848f0bb67f2417f8c88ee",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
 "assets/fonts/MaterialIcons-Regular.otf": "e7069dfd19b331be16bed984668fe080",
-"assets/NOTICES": "43ce4adef469bf4f16e21e537c5d6381",
+"assets/NOTICES": "fa42350bb618b6448487cde6b5f7bc24",
 "assets/packages/wakelock_web/assets/no_sleep.js": "7748a45cd593f33280669b29c2c8919a",
 "canvaskit/canvaskit.js": "97937cb4c2c2073c968525a3e08c86a3",
 "canvaskit/canvaskit.wasm": "3de12d898ec208a5f31362cc00f09b9e",
@@ -796,9 +796,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "56995ed1e527995a851ed175e98c929b",
-"/": "56995ed1e527995a851ed175e98c929b",
-"main.dart.js": "ff0ed9f20894356945c3067ef1196028",
+"index.html": "27e6ac194ddf889b28f3d51990d9e34a",
+"/": "27e6ac194ddf889b28f3d51990d9e34a",
+"main.dart.js": "1f4533f9fea2cb600f90c89c06ccc007",
 "manifest.json": "ae9ee80e77083d628851c923a906495b",
 "version.json": "737d44e97ba6df2d174c2c0fad53fd88"
 };
