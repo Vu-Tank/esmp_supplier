@@ -1,6 +1,10 @@
 import 'dart:developer';
 
+import 'package:esmp_supplier/src/model/api_response.dart';
+import 'package:esmp_supplier/src/repositories/user_repositories.dart';
+import 'package:esmp_supplier/src/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseAuthService {
   FirebaseAuthService() : _auth = FirebaseAuth.instance;
@@ -31,7 +35,7 @@ class FirebaseAuthService {
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (_) {
       rethrow;
     }
   }
@@ -48,13 +52,27 @@ class FirebaseAuthService {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: otp);
     try {
-      final user = await _auth.signInWithCredential(credential);
-
-      if (isLogin) {
-        // final fcmToken = await FirebaseMessaging.instance.getToken();
-        onLogin();
+      final userCredential = await _auth.signInWithCredential(credential);
+      final user = userCredential.user;
+      if (user == null) {
+        onFailed('Lỗi vui lòng thử lại');
       } else {
-        onRegister();
+        String firebaseToken = await user.getIdToken();
+        String uid = user.uid;
+        if (isLogin) {
+          String? fmc = await FirebaseMessaging.instance.getToken();
+          ApiResponse apiResponse = await UserRepositories.login(
+              phone: Utils.convertToDB(phoneNumber),
+              fcM_Firebase: fmc!,
+              token: firebaseToken);
+          if (apiResponse.isSuccess!) {
+            onLogin(apiResponse.data);
+          } else {
+            onFailed(apiResponse.msg);
+          }
+        } else {
+          onRegister(firebaseToken, uid);
+        }
       }
     } catch (error) {
       if (error

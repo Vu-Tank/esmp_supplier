@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
 import 'package:esmp_supplier/src/bloc/verify/time/cubit/timer_cubit.dart';
 import 'package:esmp_supplier/src/bloc/verify/verify_bloc.dart';
+import 'package:esmp_supplier/src/model/user.dart';
 import 'package:esmp_supplier/src/router/app_router_constants.dart';
 import 'package:esmp_supplier/src/utils/app_style.dart';
 import 'package:esmp_supplier/src/utils/my_dialog.dart';
@@ -69,6 +71,13 @@ class _VerifyPageState extends State<VerifyPage> {
         ),
         centerTitle: true,
         backgroundColor: AppStyle.appColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppStyle.buttom.color),
+          onPressed: () {
+            context.read<TimerCubit>().dispose();
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: BlocConsumer<VerifyBloc, VerifyState>(
         listener: (context, state) {
@@ -123,6 +132,14 @@ class _VerifyPageState extends State<VerifyPage> {
                     // },
                     onCompleted: null,
                   ),
+                  if (state is VerifyOtpFailed)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      child: Text(
+                        state.msg,
+                        style: AppStyle.h2.copyWith(color: Colors.red),
+                      ),
+                    ),
                   const SizedBox(
                     height: 8.0,
                   ),
@@ -168,17 +185,32 @@ class _VerifyPageState extends State<VerifyPage> {
                               phone: widget.phone,
                               verificationId: widget.verificationId,
                               isLogin: widget.isLogin,
-                              onLogin: () {},
-                              onRegister: (String firebaseToken) {
-                                GoRouter.of(context).pushNamed(
+                              onLogin: (User user) {
+                                context.read<TimerCubit>().dispose();
+                                context
+                                    .read<AuthBloc>()
+                                    .add(UserLoggedIn(user: user));
+                                GoRouter.of(context).pushReplacementNamed(
+                                  AppRouterConstants.homeRouteName,
+                                );
+                              },
+                              onRegister: (String firebaseToken, String uid) {
+                                context.read<TimerCubit>().dispose();
+                                GoRouter.of(context).pushReplacementNamed(
                                     AppRouterConstants
                                         .registerSupplierRouteName,
                                     queryParams: {
-                                      'firebaseToken': firebaseToken
+                                      'firebaseToken': firebaseToken,
+                                      'uid': uid,
+                                      'phone': widget.phone
                                     });
                               })),
                       style: AppStyle.myButtonStyle,
-                      child: Text('Xác thực', style: AppStyle.buttom),
+                      child: (state is Verifying)
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text('Xác thực', style: AppStyle.buttom),
                     ),
                   ),
                 ],
@@ -188,5 +220,10 @@ class _VerifyPageState extends State<VerifyPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

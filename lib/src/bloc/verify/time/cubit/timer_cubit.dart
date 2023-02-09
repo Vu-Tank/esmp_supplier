@@ -14,18 +14,30 @@ class TimerCubit extends Cubit<TimerState> {
     if (time != null) {
       emit(TimerProgress(time));
     } else {
-      emit(const TimerProgress(0));
+      // emit(const TimerProgress(0));
     }
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state is TimerProgress) {
-        if (state.elapsed! > 0) {
-          emit(TimerProgress(state.elapsed! - 1));
-        } else {
-          _timer!.cancel();
-          Wakelock.disable();
-          emit(const TimerInitial());
-        }
+    _timer = Timer.periodic(const Duration(seconds: 1), onTick);
+  }
+
+  onTick(Timer timer) {
+    if (state is TimerProgress) {
+      if (state.elapsed! > 0) {
+        emit(TimerProgress(state.elapsed! - 1));
+      } else {
+        _timer!.cancel();
+        Wakelock.disable();
+        emit(const TimerInitial());
       }
-    });
+    }
+  }
+
+  dispose() {
+    if (_timer != null) {
+      if (_timer!.isActive) {
+        _timer!.cancel();
+        Wakelock.disable();
+        emit(const TimerInitial());
+      }
+    }
   }
 }

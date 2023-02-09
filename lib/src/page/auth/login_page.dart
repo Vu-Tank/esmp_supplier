@@ -107,26 +107,35 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: () async {
-                            log('ádd:${_phoneController.text}');
-                            context.read<LoginBloc>().add(LoginPressed(
-                                phoneNumber: _phoneController.text,
-                                onSuccess: (String verificationId) {
-                                  GoRouter.of(context).pushNamed(
-                                      AppRouterConstants.verifyRouteName,
-                                      queryParams: {});
-                                }));
-                          },
+                          onPressed: (state is Logining)
+                              ? null
+                              : () async =>
+                                  context.read<LoginBloc>().add(LoginPressed(
+                                      phoneNumber: _phoneController.text,
+                                      onSuccess: (String verificationId) {
+                                        GoRouter.of(context).pushNamed(
+                                            AppRouterConstants.verifyRouteName,
+                                            queryParams: {
+                                              'verificationId': verificationId,
+                                              'isLogin': true.toString(),
+                                              'phone':
+                                                  _phoneController.text.trim(),
+                                            });
+                                      })),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppStyle.appColor,
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8))),
                           ),
-                          child: Text(
-                            'Đăng nhập',
-                            style: AppStyle.buttom,
-                          ),
+                          child: (state is Logining)
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  'Đăng Nhập',
+                                  style: AppStyle.buttom,
+                                ),
                         ),
                       ),
                     ]),

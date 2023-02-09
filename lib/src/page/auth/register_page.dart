@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               color: Colors.white,
                             )
                           : Text(
-                              'Đăng nhập',
+                              'Đăng ký',
                               style: AppStyle.buttom,
                             ),
                     ),

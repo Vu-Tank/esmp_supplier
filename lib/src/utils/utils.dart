@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Utils {
   static String convertToFirebase(String value) {
     if (value.indexOf('0') == 0) {
@@ -18,5 +20,10 @@ class Utils {
       value = value.replaceFirst("+", "");
     }
     return value;
+  }
+
+  static String convertDateTimeToString(DateTime dateTime) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+    return dateFormat.format(dateTime);
   }
 }

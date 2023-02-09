@@ -12,7 +12,10 @@ import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+  final FirebaseAuthService _authService;
+  LoginBloc()
+      : _authService = FirebaseAuthService(),
+        super(LoginInitial()) {
     on<LoginPressed>(
       (event, emit) async {
         emit(Logining());
@@ -24,15 +27,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               phone: Utils.convertToDB(phone.value.toString()));
           if (apiResponse.isSuccess!) {
             emit(LoginSuccess());
-            await FirebaseAuthService().verifyPhone(
+            await _authService.verifyPhone(
                 phoneNumber: Utils.convertToFirebase(phone.value.toString()),
-                onSendCode: () {
-                  log("message");
+                onSendCode: (String verificationId) {
+                  emit(LoginSuccess());
+                  event.onSuccess(verificationId);
                 },
-                onFailed: () {
-                  log("lỗi");
+                onFailed: (String msg) {
+                  emit(LoginFailed(errormsg: msg, phoneError: null));
                 });
-            event.onSuccess();
           } else {
             emit(LoginFailed(phoneError: null, errormsg: apiResponse.msg));
           }

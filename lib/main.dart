@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:esmp_supplier/src/router/app_router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -21,6 +22,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.instance;
   HttpOverrides.global = MyHttpOverrides();
   setPathUrlStrategy();
   runApp(const MyApp());
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
+      title: 'Esmp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

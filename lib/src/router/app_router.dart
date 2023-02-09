@@ -1,3 +1,4 @@
+import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register/register_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register_supplier/register_supplier_bloc.dart';
 import 'package:esmp_supplier/src/bloc/verify/time/cubit/timer_cubit.dart';
@@ -16,13 +17,24 @@ import '../page/home_page.dart';
 import 'app_router_constants.dart';
 
 class AppRouter {
+  static final AuthBloc _auth = AuthBloc()..add(AppLoaded());
   GoRouter router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
           path: '/',
           name: AppRouterConstants.homeRouteName,
           pageBuilder: (context, state) {
-            return const MaterialPage(child: HomePage());
+            return MaterialPage(
+                child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => _auth,
+                )
+              ],
+              child: const HomePage(),
+            ));
+            // return const MaterialPage(
+            //     child: RegisterSupplierPage(firebaseToken: 'firebaseToken'));
           },
           routes: <GoRoute>[
             GoRoute(
@@ -30,7 +42,7 @@ class AppRouter {
               name: AppRouterConstants.loginRouteName,
               pageBuilder: (context, state) {
                 return MaterialPage(
-                  child: BlocProvider(
+                  child: BlocProvider<LoginBloc>(
                     create: (context) => LoginBloc(),
                     child: const LoginPage(),
                   ),
@@ -42,7 +54,7 @@ class AppRouter {
               name: AppRouterConstants.registerRouteName,
               pageBuilder: (context, state) {
                 return MaterialPage(
-                  child: BlocProvider(
+                  child: BlocProvider<RegisterBloc>(
                     create: (context) => RegisterBloc(),
                     child: const RegisterPage(),
                   ),
@@ -54,14 +66,28 @@ class AppRouter {
               name: AppRouterConstants.registerSupplierRouteName,
               pageBuilder: (context, state) {
                 String? firebaseToken = state.queryParams['firebaseToken'];
-                if (firebaseToken == null) {
+                String? uid = state.queryParams['uid'];
+                String? phone = state.queryParams['phone'];
+                if (firebaseToken == null || uid == null || phone == null) {
                   return const MaterialPage(
                       child: ErrorPage(errorMessage: '404'));
                 } else {
                   return MaterialPage(
-                    child: BlocProvider(
-                      create: (context) => RegisterSupplierBloc(),
-                      child: RegisterSupplierPage(firebaseToken: firebaseToken),
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => RegisterSupplierBloc()
+                            ..add(RegisterSupplierInit()),
+                        ),
+                        BlocProvider(
+                          create: (context) => _auth,
+                        )
+                      ],
+                      child: RegisterSupplierPage(
+                        firebaseToken: firebaseToken,
+                        phone: phone,
+                        uid: uid,
+                      ),
                     ),
                   );
                 }
@@ -84,9 +110,10 @@ class AppRouter {
                     return MaterialPage(
                       child: MultiBlocProvider(
                         providers: [
-                          // BlocProvider.value(
-                          //   value: BlocProvider.of<RegisterBloc>(context),
-                          // ),
+                          //
+                          BlocProvider(
+                            create: (context) => _auth,
+                          ),
                           BlocProvider(
                             create: (context) => VerifyBloc(),
                           ),
