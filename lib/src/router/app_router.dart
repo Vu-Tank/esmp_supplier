@@ -1,5 +1,6 @@
 import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register/register_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register_store/register_store_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register_supplier/register_supplier_bloc.dart';
 import 'package:esmp_supplier/src/bloc/verify/time/cubit/timer_cubit.dart';
 import 'package:esmp_supplier/src/bloc/verify/verify_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:esmp_supplier/src/page/auth/register_page.dart';
 import 'package:esmp_supplier/src/page/auth/register_supplier_page.dart';
 import 'package:esmp_supplier/src/page/auth/verify_page.dart';
 import 'package:esmp_supplier/src/page/error_page.dart';
+import 'package:esmp_supplier/src/page/store/register_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -143,6 +145,24 @@ class AppRouter {
                 }
               },
             ),
+            GoRoute(
+                path: AppRouterConstants.registerStore,
+                name: AppRouterConstants.registerStore,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => RegisterStoreBloc(),
+                        ),
+                        BlocProvider(
+                          create: (context) => _auth,
+                        )
+                      ],
+                      child: const RegisterStorePage(),
+                    ),
+                  );
+                }),
           ]),
     ],
   );
