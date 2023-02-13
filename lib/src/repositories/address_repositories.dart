@@ -9,26 +9,25 @@ import '../model/address/ward.dart';
 class AddressRepository {
   static Future<List<Province>> getProvince() async {
     List<Province> list = [];
-    var data =
-        await rootBundle.loadString('assets/hanh_chinh_vn/tinh_tp_full.json');
-    var body = json.decode(data);
-    Map<String, dynamic> map = Map.from(body);
-    // map.forEach((key, value)async {
-    //   Province province=await Province.fromJson(value);
-    //   // log(province.toString());
-    //   list.add(province);
-    // });
-    list.add(Province(
-        name: 'Chọn Tỉnh/thành phố',
-        slug: 'chon tinh',
-        type: 'tinh',
-        name_with_type: 'Chọn tỉnh',
-        code: '-1',
-        listDistrict: []));
-    await Future.forEach(map.values, (element) async {
-      Province province = await Province.fromJson(element);
-      list.add(province);
-    });
+    try {
+      var data =
+          await rootBundle.loadString('assets/hanh_chinh_vn/tinh_tp_full.json');
+      var body = json.decode(data);
+      Map<String, dynamic> map = Map.from(body);
+      list.add(Province(
+          name: 'Chọn Tỉnh/thành phố',
+          slug: 'chon tinh',
+          type: 'tinh',
+          name_with_type: 'Chọn tỉnh',
+          code: '-1',
+          listDistrict: []));
+      await Future.forEach(map.values, (element) async {
+        Province province = await Province.fromJson(element);
+        list.add(province);
+      });
+    } catch (e) {
+      rethrow;
+    }
     return list;
   }
 
@@ -42,14 +41,18 @@ class AddressRepository {
           path_with_type: "",
           listWard: [])
     ];
-    var data = await rootBundle
-        .loadString('assets/hanh_chinh_vn/quan_huyen/$provinceCode.json');
-    var body = json.decode(data);
-    Map<String, dynamic> map = Map.from(body);
-    await Future.forEach(map.values, (element) async {
-      District district = await District.fromJson(element);
-      list.add(district);
-    });
+    try {
+      var data = await rootBundle
+          .loadString('assets/hanh_chinh_vn/quan_huyen/$provinceCode.json');
+      var body = json.decode(data);
+      Map<String, dynamic> map = Map.from(body);
+      await Future.forEach(map.values, (element) async {
+        District district = await District.fromJson(element);
+        list.add(district);
+      });
+    } catch (e) {
+      rethrow;
+    }
     return list;
   }
 
@@ -62,13 +65,17 @@ class AddressRepository {
           path_with_type: "",
           code: '-1')
     ];
-    var data = await rootBundle
-        .loadString('assets/hanh_chinh_vn/xa_phuong/$districtCode.json');
-    var body = json.decode(data);
-    Map<String, dynamic> map = Map.from(body);
-    map.forEach((key, value) {
-      list.add(Ward.fromJson(value));
-    });
+    try {
+      var data = await rootBundle
+          .loadString('assets/hanh_chinh_vn/xa_phuong/$districtCode.json');
+      var body = json.decode(data);
+      Map<String, dynamic> map = Map.from(body);
+      map.forEach((key, value) {
+        list.add(Ward.fromJson(value));
+      });
+    } catch (e) {
+      rethrow;
+    }
     return list;
   }
 }
