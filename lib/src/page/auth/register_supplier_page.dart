@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register_supplier/district/district_cubit.dart';
 import 'package:esmp_supplier/src/bloc/register_supplier/register_supplier_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register_supplier/ward/ward_cubit.dart';
 import 'package:esmp_supplier/src/model/address/district.dart';
 import 'package:esmp_supplier/src/model/address/province.dart';
 import 'package:esmp_supplier/src/model/address/ward.dart';
@@ -305,11 +307,13 @@ class _RegisterSupplierPageState extends State<RegisterSupplierPage> {
                                 if (value != null) {
                                   setState(() {
                                     _province = value;
-                                    if (value.code != '-1') {
-                                      _district = _province!.listDistrict.first;
-                                    } else {
-                                      _district = null;
+                                    if (value.key != '-1') {
+                                      context
+                                          .read<DistrictCubit>()
+                                          .selectedProvince(value.key);
                                     }
+                                    _district = null;
+
                                     _ward = null;
                                   });
                                 }
@@ -320,7 +324,7 @@ class _RegisterSupplierPageState extends State<RegisterSupplierPage> {
                                 return DropdownMenuItem<Province>(
                                   value: value,
                                   child: Text(
-                                    value.name,
+                                    value.value,
                                     style: AppStyle.h2,
                                   ),
                                 );
@@ -328,92 +332,139 @@ class _RegisterSupplierPageState extends State<RegisterSupplierPage> {
                             ),
                           ),
                           // quan
-                          if (_province != null && _province!.code != '-1')
+                          if (_province != null && _province!.key != '-1')
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: DropdownButtonFormField(
-                                value: _district,
-                                icon: const Icon(Icons.arrow_downward),
-                                decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 2),
-                                      borderRadius: BorderRadius.circular(40)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: AppStyle.appColor, width: 2),
-                                      borderRadius: BorderRadius.circular(40)),
-                                ),
-                                isExpanded: true,
-                                elevation: 16,
-                                style: AppStyle.h2,
-                                onChanged: (District? value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      _district = value;
-                                      if (value.code != '-1') {
-                                        _ward = value.listWard.first;
-                                      } else {
-                                        _ward = null;
-                                      }
-                                    });
+                              child: BlocBuilder<DistrictCubit, DistrictState>(
+                                builder: (context, state) {
+                                  if (state is DistrictError) {
+                                    return Center(
+                                      child: Text(
+                                        state.msg,
+                                        style: AppStyle.h2
+                                            .copyWith(color: Colors.red),
+                                      ),
+                                    );
+                                  } else if (state is DistrictLoaded) {
+                                    _district =
+                                        _district ?? state.districts.first;
+                                    return DropdownButtonFormField(
+                                      value: _district,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                                color: Colors.grey, width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: AppStyle.appColor,
+                                                width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                      ),
+                                      isExpanded: true,
+                                      elevation: 16,
+                                      style: AppStyle.h2,
+                                      onChanged: (District? value) {
+                                        if (value != null) {
+                                          setState(() {
+                                            _district = value;
+                                            if (value.key != '-1') {
+                                              context
+                                                  .read<WardCubit>()
+                                                  .selectDistrict(value.key);
+                                            }
+                                            _ward = null;
+                                          });
+                                        }
+                                      },
+                                      items: state.districts
+                                          .map<DropdownMenuItem<District>>(
+                                              (District value) {
+                                        return DropdownMenuItem<District>(
+                                          value: value,
+                                          child: Text(
+                                            value.value,
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            style: AppStyle.h2,
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
                                   }
                                 },
-                                items: _province!.listDistrict
-                                    .map<DropdownMenuItem<District>>(
-                                        (District value) {
-                                  return DropdownMenuItem<District>(
-                                    value: value,
-                                    child: Text(
-                                      value.name_with_type,
-                                      overflow: TextOverflow.fade,
-                                      maxLines: 1,
-                                      style: AppStyle.h2,
-                                    ),
-                                  );
-                                }).toList(),
                               ),
                             ),
                           // phuong
-                          if (_district != null && _district!.code != '-1')
+                          if (_district != null && _district!.key != '-1')
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: DropdownButtonFormField(
-                                value: _ward,
-                                icon: const Icon(Icons.arrow_downward),
-                                isExpanded: true,
-                                elevation: 16,
-                                decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 2),
-                                      borderRadius: BorderRadius.circular(40)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: AppStyle.appColor, width: 2),
-                                      borderRadius: BorderRadius.circular(40)),
-                                ),
-                                style: AppStyle.h2,
-                                onChanged: (Ward? value) {
-                                  setState(() {
-                                    _ward = value;
-                                  });
-                                },
-                                items: _district!.listWard
-                                    .map<DropdownMenuItem<Ward>>((Ward value) {
-                                  return DropdownMenuItem<Ward>(
-                                    value: value,
-                                    child: Text(
-                                      value.name_with_type,
-                                      overflow: TextOverflow.fade,
-                                      maxLines: 1,
+                              child: BlocBuilder<WardCubit, WardState>(
+                                builder: (context, state) {
+                                  if (state is WardError) {
+                                    return Center(
+                                      child: Text(
+                                        state.msg,
+                                        style: AppStyle.h2
+                                            .copyWith(color: Colors.red),
+                                      ),
+                                    );
+                                  } else if (state is WardLoaded) {
+                                    _ward = state.ward.first;
+                                    return DropdownButtonFormField(
+                                      value: _ward,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      isExpanded: true,
+                                      elevation: 16,
+                                      decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                                color: Colors.grey, width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: AppStyle.appColor,
+                                                width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                      ),
                                       style: AppStyle.h2,
-                                    ),
-                                  );
-                                }).toList(),
+                                      onChanged: (Ward? value) {
+                                        setState(() {
+                                          _ward = value;
+                                        });
+                                      },
+                                      items: state.ward
+                                          .map<DropdownMenuItem<Ward>>(
+                                              (Ward value) {
+                                        return DropdownMenuItem<Ward>(
+                                          value: value,
+                                          child: Text(
+                                            value.value,
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            style: AppStyle.h2,
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
                               ),
                             ),
-                          if (_ward != null && _ward!.code != '-1')
+                          if (_ward != null && _ward!.key != '-1')
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: TextField(

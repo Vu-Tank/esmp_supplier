@@ -1,7 +1,9 @@
 import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register/register_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register_store/register_store_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register_supplier/district/district_cubit.dart';
 import 'package:esmp_supplier/src/bloc/register_supplier/register_supplier_bloc.dart';
+import 'package:esmp_supplier/src/bloc/register_supplier/ward/ward_cubit.dart';
 import 'package:esmp_supplier/src/bloc/verify/time/cubit/timer_cubit.dart';
 import 'package:esmp_supplier/src/bloc/verify/verify_bloc.dart';
 import 'package:esmp_supplier/src/page/auth/register_page.dart';
@@ -19,151 +21,163 @@ import '../page/home_page.dart';
 import 'app_router_constants.dart';
 
 class AppRouter {
-  static final AuthBloc _auth = AuthBloc()..add(AppLoaded());
-  GoRouter router = GoRouter(
-    routes: <GoRoute>[
-      GoRoute(
-          path: '/',
-          name: AppRouterConstants.homeRouteName,
-          pageBuilder: (context, state) {
-            return MaterialPage(
-                child: MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => _auth,
-                )
-              ],
-              child: const HomePage(),
-            ));
-            // return const MaterialPage(
-            //     child: RegisterSupplierPage(firebaseToken: 'firebaseToken'));
-          },
-          routes: <GoRoute>[
-            GoRoute(
-              path: AppRouterConstants.loginRouteName,
-              name: AppRouterConstants.loginRouteName,
-              pageBuilder: (context, state) {
-                return MaterialPage(
+  AppRouter() : _auth = AuthBloc()..add(AppLoaded());
+  final AuthBloc _auth;
+  GoRouter getRouter() {
+    return GoRouter(
+      routes: <GoRoute>[
+        GoRoute(
+            path: '/',
+            name: AppRouterConstants.homeRouteName,
+            pageBuilder: (context, state) {
+              return MaterialPage(
                   child: MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => LoginBloc(),
-                      ),
-                      BlocProvider(
-                        create: (context) => _auth,
-                      )
-                    ],
-                    child: const LoginPage(),
-                  ),
-                );
-              },
-            ),
-            GoRoute(
-              path: AppRouterConstants.registerRouteName,
-              name: AppRouterConstants.registerRouteName,
-              pageBuilder: (context, state) {
-                return MaterialPage(
-                  child: BlocProvider<RegisterBloc>(
-                    create: (context) => RegisterBloc(),
-                    child: const RegisterPage(),
-                  ),
-                );
-              },
-            ),
-            GoRoute(
-              path: AppRouterConstants.registerSupplierRouteName,
-              name: AppRouterConstants.registerSupplierRouteName,
-              pageBuilder: (context, state) {
-                String? firebaseToken = state.queryParams['firebaseToken'];
-                String? uid = state.queryParams['uid'];
-                String? phone = state.queryParams['phone'];
-                if (firebaseToken == null || uid == null || phone == null) {
-                  return const MaterialPage(
-                      child: ErrorPage(errorMessage: '404'));
-                } else {
-                  return MaterialPage(
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => RegisterSupplierBloc()
-                            ..add(RegisterSupplierInit()),
-                        ),
-                        BlocProvider(
-                          create: (context) => _auth,
-                        )
-                      ],
-                      child: RegisterSupplierPage(
-                        firebaseToken: firebaseToken,
-                        phone: phone,
-                        uid: uid,
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-            GoRoute(
-              path: AppRouterConstants.verifyRouteName,
-              name: AppRouterConstants.verifyRouteName,
-              pageBuilder: (context, state) {
-                String? verificationId = state.queryParams['verificationId'];
-                String? isLogin = state.queryParams['isLogin'];
-                String? phone = state.queryParams['phone'];
-                if (verificationId == null ||
-                    isLogin == null ||
-                    phone == null) {
-                  return const MaterialPage(
-                      child: ErrorPage(errorMessage: '404'));
-                } else {
-                  try {
-                    return MaterialPage(
-                      child: MultiBlocProvider(
-                        providers: [
-                          //
-                          BlocProvider(
-                            create: (context) => _auth,
-                          ),
-                          BlocProvider(
-                            create: (context) => VerifyBloc(),
-                          ),
-                          BlocProvider(
-                            create: (context) {
-                              return TimerCubit()..startTimer(60);
-                            },
-                          )
-                        ],
-                        child: VerifyPage(
-                            isLogin: isLogin == 'true',
-                            verificationId: verificationId,
-                            phone: phone),
-                      ),
-                    );
-                  } catch (e) {
-                    return MaterialPage(
-                        child: ErrorPage(errorMessage: e.toString()));
-                  }
-                }
-              },
-            ),
-            GoRoute(
-                path: AppRouterConstants.registerStore,
-                name: AppRouterConstants.registerStore,
+                providers: [
+                  BlocProvider(
+                    create: (context) => _auth,
+                  )
+                ],
+                child: const HomePage(),
+              ));
+              // return const MaterialPage(
+              //     child: RegisterSupplierPage(firebaseToken: 'firebaseToken'));
+            },
+            routes: <GoRoute>[
+              //login
+              GoRoute(
+                path: AppRouterConstants.loginRouteName,
+                name: AppRouterConstants.loginRouteName,
                 pageBuilder: (context, state) {
                   return MaterialPage(
                     child: MultiBlocProvider(
                       providers: [
                         BlocProvider(
-                          create: (context) => RegisterStoreBloc(),
+                          create: (context) => LoginBloc(),
                         ),
                         BlocProvider(
                           create: (context) => _auth,
                         )
                       ],
-                      child: const RegisterStorePage(),
+                      child: const LoginPage(),
                     ),
                   );
-                }),
-          ]),
-    ],
-  );
+                },
+              ),
+              //register
+              GoRoute(
+                path: AppRouterConstants.registerRouteName,
+                name: AppRouterConstants.registerRouteName,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    child: BlocProvider<RegisterBloc>(
+                      create: (context) => RegisterBloc(),
+                      child: const RegisterPage(),
+                    ),
+                  );
+                },
+              ),
+              //register supplier
+              GoRoute(
+                path: AppRouterConstants.registerSupplierRouteName,
+                name: AppRouterConstants.registerSupplierRouteName,
+                pageBuilder: (context, state) {
+                  String? firebaseToken = state.queryParams['firebaseToken'];
+                  String? uid = state.queryParams['uid'];
+                  String? phone = state.queryParams['phone'];
+                  if (firebaseToken == null || uid == null || phone == null) {
+                    return const MaterialPage(
+                        child: ErrorPage(errorMessage: '404'));
+                  } else {
+                    return MaterialPage(
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => RegisterSupplierBloc()
+                              ..add(RegisterSupplierInit()),
+                          ),
+                          BlocProvider(
+                            create: (context) => DistrictCubit(),
+                          ),
+                          BlocProvider(
+                            create: (context) => _auth,
+                          ),
+                          BlocProvider(
+                            create: (context) => WardCubit(),
+                          ),
+                        ],
+                        child: RegisterSupplierPage(
+                          firebaseToken: firebaseToken,
+                          phone: phone,
+                          uid: uid,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+              GoRoute(
+                path: AppRouterConstants.verifyRouteName,
+                name: AppRouterConstants.verifyRouteName,
+                pageBuilder: (context, state) {
+                  String? verificationId = state.queryParams['verificationId'];
+                  String? isLogin = state.queryParams['isLogin'];
+                  String? phone = state.queryParams['phone'];
+                  if (verificationId == null ||
+                      isLogin == null ||
+                      phone == null) {
+                    return const MaterialPage(
+                        child: ErrorPage(errorMessage: '404'));
+                  } else {
+                    try {
+                      return MaterialPage(
+                        child: MultiBlocProvider(
+                          providers: [
+                            //
+                            BlocProvider(
+                              create: (context) => _auth,
+                            ),
+                            BlocProvider(
+                              create: (context) => VerifyBloc(),
+                            ),
+                            BlocProvider(
+                              create: (context) {
+                                return TimerCubit()..startTimer(60);
+                              },
+                            )
+                          ],
+                          child: VerifyPage(
+                              isLogin: isLogin == 'true',
+                              verificationId: verificationId,
+                              phone: phone),
+                        ),
+                      );
+                    } catch (e) {
+                      return MaterialPage(
+                          child: ErrorPage(errorMessage: e.toString()));
+                    }
+                  }
+                },
+              ),
+              GoRoute(
+                  path: AppRouterConstants.registerStore,
+                  name: AppRouterConstants.registerStore,
+                  pageBuilder: (context, state) {
+                    return MaterialPage(
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => RegisterStoreBloc(),
+                          ),
+                          BlocProvider(
+                            create: (context) => _auth,
+                          )
+                        ],
+                        child: const RegisterStorePage(),
+                      ),
+                    );
+                  }),
+            ]),
+      ],
+    );
+  }
 }

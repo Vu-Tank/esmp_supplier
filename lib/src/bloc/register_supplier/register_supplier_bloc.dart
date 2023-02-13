@@ -30,12 +30,11 @@ class RegisterSupplierBloc
         emit(RegisterSupplierloading());
         try {
           await AddressRepository.getProvince().then((value) {
-            log(value.length.toString());
             emit(RegisterSupplierInitial.fromOldState(state,
                 genders: _gender,
-                provinces: value,
+                provinces: value.data,
                 gender: _gender.first,
-                province: value.first));
+                province: (value.data as List).first));
           });
         } catch (e) {
           emit(RegisterSupplierFailed.fromOldState(state, msg: e.toString()));
@@ -68,7 +67,7 @@ class RegisterSupplierBloc
             throw Exception('Không thể lấy mã thông báo');
           }
           String? placeID = await GoongRepositories().getPlaceIdFromText(
-              '${event.address}, ${event.province.name}, ${event.district!.name}, ${event.ward!.name}');
+              '${event.address}, ${event.province.value}, ${event.district!.value}, ${event.ward!.value}');
           if (placeID == null) throw Exception('Không thể lấy địa chỉ');
           GoongAddress? goongAddress =
               await GoongRepositories().getPlace(placeID);
@@ -87,9 +86,9 @@ class RegisterSupplierBloc
               gender: event.gender,
               latitude: lat,
               longitude: lng,
-              province: event.province.name,
-              district: event.district!.name,
-              ward: event.ward!.name,
+              province: event.province.value,
+              district: event.district!.value,
+              ward: event.ward!.value,
               firebaseID: event.uid,
               fcMFirebase: fcm);
           if (apiResponse.isSuccess!) {

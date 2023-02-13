@@ -9,4 +9,10 @@ class AppUrl {
   static const String login = '$baseUrl/user/suppliersign_in';
 
   static const String refeshtoken = '$baseUrl/user/refeshtoken';
+
+  static const String province = '$baseUrl/Address/provine';
+
+  static const String district = '$baseUrl/Address/district';
+
+  static const String ward = '$baseUrl/Address/ward';
 }

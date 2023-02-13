@@ -75,7 +75,7 @@ class Validations {
 
   static ValidationItem valProvince(Province value) {
     ValidationItem validationItem = ValidationItem(null, null);
-    if (value.code == '-1') {
+    if (value.key == '-1') {
       validationItem =
           ValidationItem(null, "Vui lòng chọn Tỉnh/Thành phố của bạn");
     } else {
@@ -86,7 +86,7 @@ class Validations {
 
   static ValidationItem valDistrict(District? value) {
     ValidationItem validationItem = ValidationItem(null, null);
-    if (value == null || value.code == '-1') {
+    if (value == null || value.key == '-1') {
       validationItem = ValidationItem(null, "Vui lòng chọn Quận/Huyện của bạn");
     } else {
       validationItem = ValidationItem(value, null);
@@ -96,7 +96,7 @@ class Validations {
 
   static ValidationItem valWard(Ward? value) {
     ValidationItem validationItem = ValidationItem(null, null);
-    if (value == null || value.code == '-1') {
+    if (value == null || value.key == '-1') {
       validationItem = ValidationItem(null, "Vui lòng chọn Phường/Xã của bạn");
     } else {
       validationItem = ValidationItem(value, null);
