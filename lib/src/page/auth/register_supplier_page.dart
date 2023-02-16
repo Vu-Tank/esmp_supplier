@@ -1,13 +1,12 @@
 import 'dart:developer';
 
 import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
-import 'package:esmp_supplier/src/bloc/register_supplier/district/district_cubit.dart';
 import 'package:esmp_supplier/src/bloc/register_supplier/register_supplier_bloc.dart';
-import 'package:esmp_supplier/src/bloc/register_supplier/ward/ward_cubit.dart';
 import 'package:esmp_supplier/src/model/address/district.dart';
 import 'package:esmp_supplier/src/model/address/province.dart';
 import 'package:esmp_supplier/src/model/address/ward.dart';
 import 'package:esmp_supplier/src/model/user.dart';
+import 'package:esmp_supplier/src/router/app_router_constants.dart';
 import 'package:esmp_supplier/src/utils/app_constants.dart';
 import 'package:esmp_supplier/src/utils/app_style.dart';
 import 'package:esmp_supplier/src/utils/my_dialog.dart';
@@ -15,6 +14,9 @@ import 'package:esmp_supplier/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../cubit/district/district_cubit.dart';
+import '../../cubit/ward/ward_cubit.dart';
 
 class RegisterSupplierPage extends StatefulWidget {
   const RegisterSupplierPage(
@@ -417,7 +419,7 @@ class _RegisterSupplierPageState extends State<RegisterSupplierPage> {
                                       ),
                                     );
                                   } else if (state is WardLoaded) {
-                                    _ward = state.ward.first;
+                                    _ward ??= state.ward.first;
                                     return DropdownButtonFormField(
                                       value: _ward,
                                       icon: const Icon(Icons.arrow_downward),
@@ -554,29 +556,34 @@ class _RegisterSupplierPageState extends State<RegisterSupplierPage> {
                         child: ElevatedButton(
                           onPressed: (state is RegisterSuppliering)
                               ? null
-                              : () => context
-                                  .read<RegisterSupplierBloc>()
-                                  .add(RegisterSupplierPressed(
-                                    fullName: _fullName.text.trim(),
-                                    email: _email.text.trim(),
-                                    dob: _dob,
-                                    address: _address.text.trim(),
-                                    gender: _gender!,
-                                    province: _province!,
-                                    district: _district,
-                                    ward: _ward,
-                                    isAgree: _isOk!,
-                                    token: widget.firebaseToken,
-                                    phone: widget.phone,
-                                    uid: widget.uid,
-                                    onSuccess: (User user) {
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(UserLoggedIn(user: user));
-                                      GoRouter.of(context).pushReplacementNamed(
-                                          AppConstants.defaultAvatar);
-                                    },
-                                  )),
+                              : () {
+                                  inspect(_ward);
+                                  context
+                                      .read<RegisterSupplierBloc>()
+                                      .add(RegisterSupplierPressed(
+                                        fullName: _fullName.text.trim(),
+                                        email: _email.text.trim(),
+                                        dob: _dob,
+                                        address: _address.text.trim(),
+                                        gender: _gender!,
+                                        province: _province!,
+                                        district: _district,
+                                        ward: _ward,
+                                        isAgree: _isOk!,
+                                        token: widget.firebaseToken,
+                                        phone: widget.phone,
+                                        uid: widget.uid,
+                                        onSuccess: (User user) {
+                                          context
+                                              .read<AuthBloc>()
+                                              .add(UserLoggedIn(user: user));
+                                          GoRouter.of(context)
+                                              .pushReplacementNamed(
+                                                  AppRouterConstants
+                                                      .registerStore);
+                                        },
+                                      ));
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppStyle.appColor,
                             disabledBackgroundColor:

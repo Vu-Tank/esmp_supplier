@@ -83,8 +83,8 @@ class UserRepositories {
         apiResponse.msg = body['message'];
         apiResponse.totalPage = int.parse(body['totalPage'].toString());
         if (apiResponse.isSuccess!) {
-          // apiResponse.data = body['data'];
-          log(body['data'].toString());
+          apiResponse.data = User.fromMap(body['data']);
+          inspect(body['data']);
         }
       } else {
         apiResponse.isSuccess = false;
@@ -99,7 +99,7 @@ class UserRepositories {
 
   static Future<ApiResponse> login(
       {required String phone,
-      required String fcM_Firebase,
+      required String? fcM_Firebase,
       required String token}) async {
     ApiResponse apiResponse = ApiResponse();
     try {

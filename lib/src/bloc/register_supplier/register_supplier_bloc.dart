@@ -93,11 +93,7 @@ class RegisterSupplierBloc
               fcMFirebase: fcm);
           if (apiResponse.isSuccess!) {
             User user = apiResponse.data as User;
-            await CloudFirestoreService(uid: event.uid)
-                .createUserCloud(
-                    userName: fullName.value,
-                    imageUrl: AppConstants.defaultAvatar)
-                .then((value) => event.onSuccess(user));
+            event.onSuccess(user);
           } else {
             emit(RegisterSupplierFailed.fromOldState(state,
                 msg: apiResponse.msg));

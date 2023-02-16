@@ -24,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }));
     on<AppLoaded>((event, emit) async {
       try {
+        if (state is AuthAuthenticated) return;
         emit(AuthLoading());
         String? userID = LocalStorage.getValue('userID');
         String? token = LocalStorage.getValue('token');

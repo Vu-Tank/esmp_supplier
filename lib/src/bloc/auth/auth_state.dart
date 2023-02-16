@@ -17,6 +17,5 @@ class AuthAuthenticated extends AuthState {
   final User user;
   const AuthAuthenticated({required this.user});
   @override
-  // TODO: implement props
   List<Object> get props => [user];
 }

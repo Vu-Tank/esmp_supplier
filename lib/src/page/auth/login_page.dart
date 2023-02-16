@@ -24,11 +24,14 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _phoneController = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    // log(context.read<AuthBloc>().state.toString());
 
-    // });
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.read<AuthBloc>().state is AuthAuthenticated) {
+        GoRouter.of(context).pushReplacement('/');
+      }
+    });
   }
 
   @override
@@ -36,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          // log('aa');
           GoRouter.of(context)
               .pushReplacementNamed(AppRouterConstants.homeRouteName);
         }

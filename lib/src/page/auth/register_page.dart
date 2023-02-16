@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:esmp_supplier/src/bloc/auth/auth_bloc.dart';
 import 'package:esmp_supplier/src/bloc/register/register_bloc.dart';
 import 'package:esmp_supplier/src/utils/app_style.dart';
 import 'package:esmp_supplier/src/utils/my_dialog.dart';
@@ -22,6 +23,13 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    log(context.read<AuthBloc>().state.toString());
+  }
+
   final TextEditingController _phoneController = TextEditingController();
   @override
   Widget build(BuildContext context) {

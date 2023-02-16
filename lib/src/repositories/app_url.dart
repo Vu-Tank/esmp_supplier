@@ -15,4 +15,8 @@ class AppUrl {
   static const String district = '$baseUrl/Address/district';
 
   static const String ward = '$baseUrl/Address/ward';
+
+  static const String registerStore = '$baseUrl/Store/register';
+
+  static const String loginStore = '$baseUrl/Store/login_store';
 }

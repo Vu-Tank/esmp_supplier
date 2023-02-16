@@ -91,6 +91,6 @@ class User {
 
   @override
   String toString() {
-    return 'User(userID: $userID, userName: $userName, email: $email, phone: $phone, dateOfBirth: $dateOfBirth, gender: $gender, crete_date: $crete_date, role: $role, image: $image, storeID: $storeID, addresses: $addresses, firebaseID: $firebaseID, fcM_Firebase: $fcM_Firebase, token: $token, isActive: $isActive)';
+    return 'User{userID: $userID, userName: $userName, email: $email, phone: $phone, dateOfBirth: $dateOfBirth, gender: $gender, crete_date: $crete_date, role: $role, image: $image, storeID: $storeID, addresses: $addresses, firebaseID: $firebaseID, fcM_Firebase: $fcM_Firebase, token: $token, isActive: $isActive}';
   }
 }
