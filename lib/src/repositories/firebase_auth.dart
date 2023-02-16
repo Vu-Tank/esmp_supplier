@@ -63,7 +63,7 @@ class FirebaseAuthService {
           String? fmc = await FirebaseMessaging.instance.getToken();
           ApiResponse apiResponse = await UserRepositories.login(
               phone: Utils.convertToDB(phoneNumber),
-              fcM_Firebase: fmc,
+              fcM_Firebase: fmc ?? '',
               token: firebaseToken);
           if (apiResponse.isSuccess!) {
             onLogin(apiResponse.data);
