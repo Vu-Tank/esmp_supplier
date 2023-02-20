@@ -58,12 +58,12 @@ class StoreRepositories {
         apiResponse.msg = body['message'];
         apiResponse.isSuccess = body['success'];
         if (apiResponse.isSuccess!) {
+          print(body['data']);
           apiResponse.data = Store.fromMap(body['data']);
         }
       } else {
         var responseData = await response.stream.toBytes();
         var responseString = String.fromCharCodes(responseData);
-
         var body = json.decode(responseString);
         apiResponse.msg = response.statusCode.toString();
         apiResponse.isSuccess = false;
@@ -95,6 +95,39 @@ class StoreRepositories {
         apiResponse.totalPage = int.parse(body['totalPage'].toString());
         if (apiResponse.isSuccess!) {
           apiResponse.data = Store.fromMap(body['data']);
+        }
+      } else {
+        apiResponse.isSuccess = false;
+        apiResponse.msg = json.decode(response.body)['errors'].toString();
+      }
+    } catch (e) {
+      apiResponse.isSuccess = false;
+      apiResponse.msg = e.toString();
+    }
+    return apiResponse;
+  }
+
+  static Future<ApiResponse> storePayment(
+      {required int storeID, required String token}) async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      final queryParams = {
+        'storeID': storeID.toString(),
+      };
+      String queryString = Uri(queryParameters: queryParams).query;
+      final response = await http
+          .get(Uri.parse('${AppUrl.storePayment}?$queryString'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      }).timeout(ApiSetting.timeOut);
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        apiResponse.isSuccess = body['success'];
+        apiResponse.msg = body['message'];
+        apiResponse.totalPage = int.parse(body['totalPage'].toString());
+        if (apiResponse.isSuccess!) {
+          print(body['data']);
+          apiResponse.data = body['data'];
         }
       } else {
         apiResponse.isSuccess = false;

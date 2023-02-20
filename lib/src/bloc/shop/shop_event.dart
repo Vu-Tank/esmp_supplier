@@ -15,3 +15,14 @@ class ShopLogin extends ShopEvent {
   // TODO: implement props
   List<Object> get props => [userID, token];
 }
+
+class ShopPayment extends ShopEvent {
+  final int storeID;
+  final String token;
+  final Function onSuccess;
+  const ShopPayment(
+      {required this.storeID, required this.token, required this.onSuccess});
+  @override
+  // TODO: implement props
+  List<Object> get props => [storeID, token, onSuccess];
+}

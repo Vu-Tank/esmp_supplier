@@ -18,8 +18,8 @@ class Store {
   final Image image;
   final double asset;
   final int? momoTransactionID;
-  final String actice_Date;
-  final double actice_Amount;
+  final String? actice_Date;
+  final double? actice_Amount;
   final String firebaseID;
   final String? fcM_Firebase;
   final int totalActiveItem;
@@ -40,11 +40,11 @@ class Store {
     required this.store_Status,
     required this.image,
     required this.asset,
-    required this.momoTransactionID,
-    required this.actice_Date,
-    required this.actice_Amount,
+    this.momoTransactionID,
+    this.actice_Date,
+    this.actice_Amount,
     required this.firebaseID,
-    required this.fcM_Firebase,
+    this.fcM_Firebase,
     required this.totalActiveItem,
     required this.totalBlockItem,
     required this.totalWatingItem,
@@ -102,8 +102,10 @@ class Store {
       momoTransactionID: map['momoTransactionID'] != null
           ? map['momoTransactionID'] as int
           : null,
-      actice_Date: map['actice_Date'] as String,
-      actice_Amount: map['actice_Amount'] as double,
+      actice_Date:
+          map['actice_Date'] != null ? map['actice_Date'] as String : null,
+      actice_Amount:
+          map['actice_Amount'] != null ? map['actice_Amount'] as double : null,
       firebaseID: map['firebaseID'] as String,
       fcM_Firebase:
           map['fcM_Firebase'] != null ? map['fcM_Firebase'] as String : null,

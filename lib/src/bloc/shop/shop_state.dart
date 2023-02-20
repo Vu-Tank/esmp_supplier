@@ -11,10 +11,11 @@ class ShopInitial extends ShopState {}
 
 class ShopCreated extends ShopState {
   final Store store;
-  const ShopCreated(this.store);
+  final double priceActice;
+  const ShopCreated(this.store, this.priceActice);
   @override
   // TODO: implement props
-  List<Object> get props => [store];
+  List<Object> get props => [store, priceActice];
 }
 
 class ShopLoading extends ShopState {}
@@ -25,4 +26,13 @@ class ShopLoginFailed extends ShopState {
   @override
   // TODO: implement props
   List<Object> get props => [msg];
+}
+
+class ShopPaymentFailed extends ShopState {
+  final String msg;
+  final int storeID;
+  const ShopPaymentFailed(this.msg, this.storeID);
+  @override
+  // TODO: implement props
+  List<Object> get props => [msg, storeID];
 }
