@@ -25,48 +25,38 @@ import '../page/home_page.dart';
 import 'app_router_constants.dart';
 
 class AppRouter {
-  // AppRouter(auth) : _auth = auth;
-  // final AuthBloc _auth;
   GoRouter getRouter() {
     return GoRouter(
       routes: <GoRoute>[
         GoRoute(
             path: '/',
             name: AppRouterConstants.homeRouteName,
-            pageBuilder: (context, state) {
-              return MaterialPage(
-                  child: MultiBlocProvider(
+            builder: (context, state) {
+              return MultiBlocProvider(
                 providers: [
                   BlocProvider<AuthBloc>.value(
                     value: BlocProvider.of<AuthBloc>(context),
                   )
                 ],
                 child: const HomePage(),
-              ));
-              // return const MaterialPage(
-              //     child: RegisterSupplierPage(firebaseToken: 'firebaseToken'));
+              );
             },
             routes: <GoRoute>[
               //login
               GoRoute(
                 path: AppRouterConstants.loginRouteName,
                 name: AppRouterConstants.loginRouteName,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => LoginBloc(),
-                        ),
-                        // BlocProvider(
-                        //   create: (context) => _auth,
-                        // )
-                        BlocProvider<AuthBloc>.value(
-                          value: BlocProvider.of<AuthBloc>(context),
-                        )
-                      ],
-                      child: const LoginPage(),
-                    ),
+                builder: (context, state) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => LoginBloc(),
+                      ),
+                      BlocProvider<AuthBloc>.value(
+                        value: BlocProvider.of<AuthBloc>(context),
+                      )
+                    ],
+                    child: const LoginPage(),
                   );
                 },
               ),
@@ -74,22 +64,20 @@ class AppRouter {
               GoRoute(
                 path: AppRouterConstants.registerRouteName,
                 name: AppRouterConstants.registerRouteName,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider<RegisterBloc>(
-                          create: (context) => RegisterBloc(),
-                        ),
-                        // BlocProvider(
-                        //   create: (context) => _auth,
-                        // ),
-                        BlocProvider<AuthBloc>.value(
-                          value: BlocProvider.of<AuthBloc>(context),
-                        )
-                      ],
-                      child: const RegisterPage(),
-                    ),
+                builder: (context, state) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<RegisterBloc>(
+                        create: (context) => RegisterBloc(),
+                      ),
+                      // BlocProvider(
+                      //   create: (context) => _auth,
+                      // ),
+                      BlocProvider<AuthBloc>.value(
+                        value: BlocProvider.of<AuthBloc>(context),
+                      )
+                    ],
+                    child: const RegisterPage(),
                   );
                 },
               ),
@@ -97,39 +85,33 @@ class AppRouter {
               GoRoute(
                 path: AppRouterConstants.registerSupplierRouteName,
                 name: AppRouterConstants.registerSupplierRouteName,
-                pageBuilder: (context, state) {
+                builder: (context, state) {
                   String? firebaseToken = state.queryParams['firebaseToken'];
                   String? uid = state.queryParams['uid'];
                   String? phone = state.queryParams['phone'];
                   if (firebaseToken == null || uid == null || phone == null) {
-                    return const MaterialPage(
-                        child: ErrorPage(errorMessage: '404'));
+                    return const ErrorPage(errorMessage: '404');
                   } else {
-                    return MaterialPage(
-                      child: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => RegisterSupplierBloc()
-                              ..add(RegisterSupplierInit()),
-                          ),
-                          BlocProvider(
-                            create: (context) => DistrictCubit(),
-                          ),
-                          // BlocProvider(
-                          //   create: (context) => _auth,
-                          // ),
-                          BlocProvider<AuthBloc>.value(
-                            value: BlocProvider.of<AuthBloc>(context),
-                          ),
-                          BlocProvider(
-                            create: (context) => WardCubit(),
-                          ),
-                        ],
-                        child: RegisterSupplierPage(
-                          firebaseToken: firebaseToken,
-                          phone: phone,
-                          uid: uid,
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => RegisterSupplierBloc()
+                            ..add(RegisterSupplierInit()),
                         ),
+                        BlocProvider(
+                          create: (context) => DistrictCubit(),
+                        ),
+                        BlocProvider<AuthBloc>.value(
+                          value: BlocProvider.of<AuthBloc>(context),
+                        ),
+                        BlocProvider(
+                          create: (context) => WardCubit(),
+                        ),
+                      ],
+                      child: RegisterSupplierPage(
+                        firebaseToken: firebaseToken,
+                        phone: phone,
+                        uid: uid,
                       ),
                     );
                   }
@@ -139,45 +121,37 @@ class AppRouter {
               GoRoute(
                 path: AppRouterConstants.verifyRouteName,
                 name: AppRouterConstants.verifyRouteName,
-                pageBuilder: (context, state) {
+                builder: (context, state) {
                   String? verificationId = state.queryParams['verificationId'];
                   String? isLogin = state.queryParams['isLogin'];
                   String? phone = state.queryParams['phone'];
                   if (verificationId == null ||
                       isLogin == null ||
                       phone == null) {
-                    return const MaterialPage(
-                        child: ErrorPage(errorMessage: '404'));
+                    return ErrorPage(errorMessage: '404');
                   } else {
                     try {
-                      return MaterialPage(
-                        child: MultiBlocProvider(
-                          providers: [
-                            //
-                            // BlocProvider(
-                            //   create: (context) => _auth,
-                            // ),
-                            BlocProvider<AuthBloc>.value(
-                              value: BlocProvider.of<AuthBloc>(context),
-                            ),
-                            BlocProvider(
-                              create: (context) => VerifyBloc(),
-                            ),
-                            BlocProvider(
-                              create: (context) {
-                                return TimerCubit()..startTimer(60);
-                              },
-                            )
-                          ],
-                          child: VerifyPage(
-                              isLogin: isLogin == 'true',
-                              verificationId: verificationId,
-                              phone: phone),
-                        ),
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider<AuthBloc>.value(
+                            value: BlocProvider.of<AuthBloc>(context),
+                          ),
+                          BlocProvider(
+                            create: (context) => VerifyBloc(),
+                          ),
+                          BlocProvider(
+                            create: (context) {
+                              return TimerCubit()..startTimer(60);
+                            },
+                          )
+                        ],
+                        child: VerifyPage(
+                            isLogin: isLogin == 'true',
+                            verificationId: verificationId,
+                            phone: phone),
                       );
                     } catch (e) {
-                      return MaterialPage(
-                          child: ErrorPage(errorMessage: e.toString()));
+                      return ErrorPage(errorMessage: e.toString());
                     }
                   }
                 },
@@ -185,40 +159,37 @@ class AppRouter {
               GoRoute(
                 path: AppRouterConstants.registerStore,
                 name: AppRouterConstants.registerStore,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    child: MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => RegisterStoreBloc(),
-                        ),
-                        BlocProvider(
-                          create: (context) => PickImageCubit(),
-                        ),
-                        BlocProvider<AuthBloc>.value(
-                          value: BlocProvider.of<AuthBloc>(context),
-                        ),
-                        BlocProvider(
-                          create: (context) => ProvinceCubit()..loadProvince(),
-                        ),
-                        BlocProvider(
-                          create: (context) => DistrictCubit(),
-                        ),
-                        BlocProvider(
-                          create: (context) => WardCubit(),
-                        ),
-                      ],
-                      child: const RegisterStorePage(),
-                    ),
+                builder: (context, state) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => RegisterStoreBloc(),
+                      ),
+                      BlocProvider(
+                        create: (context) => PickImageCubit(),
+                      ),
+                      BlocProvider<AuthBloc>.value(
+                        value: BlocProvider.of<AuthBloc>(context),
+                      ),
+                      BlocProvider(
+                        create: (context) => ProvinceCubit()..loadProvince(),
+                      ),
+                      BlocProvider(
+                        create: (context) => DistrictCubit(),
+                      ),
+                      BlocProvider(
+                        create: (context) => WardCubit(),
+                      ),
+                    ],
+                    child: const RegisterStorePage(),
                   );
                 },
               ),
             ]),
       ],
-      errorPageBuilder: (context, state) => MaterialPage(
-          child: ErrorPage(
+      errorBuilder: (context, state) => ErrorPage(
         errorMessage: state.error.toString(),
-      )),
+      ),
     );
   }
 }
