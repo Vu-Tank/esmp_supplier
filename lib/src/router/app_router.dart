@@ -68,9 +68,6 @@ class AppRouter {
                     BlocProvider<RegisterBloc>(
                       create: (context) => RegisterBloc(),
                     ),
-                    // BlocProvider(
-                    //   create: (context) => _auth,
-                    // ),
                     BlocProvider<AuthBloc>.value(
                       value: BlocProvider.of<AuthBloc>(context),
                     )
@@ -126,7 +123,7 @@ class AppRouter {
                 if (verificationId == null ||
                     isLogin == null ||
                     phone == null) {
-                  return ErrorPage(errorMessage: '404');
+                  return const ErrorPage(errorMessage: '404');
                 } else {
                   try {
                     return MultiBlocProvider(
