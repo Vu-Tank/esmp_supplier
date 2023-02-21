@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    final router = AppRouter().getRouter();
+    final router = AppRouter();
     return BlocProvider<AuthBloc>(
       create: (context) => AuthBloc()..add(AppLoaded()),
       child: MaterialApp.router(
@@ -43,9 +43,10 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        routerDelegate: router.routerDelegate,
-        routeInformationParser: router.routeInformationParser,
-        routeInformationProvider: router.routeInformationProvider,
+        // routerDelegate: router.routerDelegate,
+        // routeInformationParser: router.routeInformationParser,
+        // routeInformationProvider: router.routeInformationProvider,
+        routerConfig: router.router,
       ),
     );
   }
